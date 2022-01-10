@@ -1,0 +1,777 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pseudorandom number generation &#8212; Quant Finance in Python</title>
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/format.css" />
+    <link rel="stylesheet" type="text/css" href="_static/.ipynb_checkpoints/format-checkpoint.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://host.kelley.iu.edu/nstoffma/02b Pseudorandom number generation.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Covariance" href="02c%20Covariance.html" />
+    <link rel="prev" title="Probability theory" href="02a%20Probability%20theory.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="_static/qf.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Quant Finance in Python</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Preliminaries
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="01a%20math.html">
+   Math background
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="01b%20finance.html">
+   Asset returns
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Econometrics
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="probability.html">
+   Probability
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="02a%20Probability%20theory.html">
+     Probability theory
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Pseudorandom number generation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="02c%20Covariance.html">
+     Covariance
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="02d%20Estimation.html">
+     Parameter estimation
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="regression.html">
+   Regression
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="04a%20Regression%20theory.html">
+     Linear regression
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="04b%20Regression%20applications.html">
+     Implementing regressions
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Predictability
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="05a%20Predictability.html">
+   Return predictability
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Portfolio optimization
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="optimization.html">
+   Optimization
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Returns
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="returns.html">
+   Returns
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Reference
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="notation.html">
+   Notation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="sources.html">
+   Additional sources
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="bibliography.html">
+   Bibliography
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/02b Pseudorandom number generation.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/02b Pseudorandom number generation.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#using-numpy">
+   Using numpy
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#specifying-a-seed">
+   Specifying a seed
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#using-scipy">
+   Using scipy
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Pseudorandom number generation</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#using-numpy">
+   Using numpy
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#specifying-a-seed">
+   Specifying a seed
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#using-scipy">
+   Using scipy
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <div class="tex2jax_ignore mathjax_ignore section" id="pseudorandom-number-generation">
+<h1>Pseudorandom number generation<a class="headerlink" href="#pseudorandom-number-generation" title="Permalink to this headline">¶</a></h1>
+<p>Before continuing our discussion of theoretical aspects of probablity and statistics, it will be useful to have a basic understanding of how computers generate numbers that appear random. These random numbers are used as the basis for Monte Carlo simulation, which we will study in more depth later.</p>
+<div class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>Even a coin toss <a class="reference external" href="https://www.npr.org/templates/story/story.php?storyId=1697475">may not be a truly random process</a>. If we are able to perfectly control every aspect of the flip, it is possible to exert considerable control over which side comes up. In a sense, much of what humans think of as “random” is simply a lack of information about the process generating some outcome.</p>
+</div>
+<p>Computers are deterministic: for any given input they always give the same output. As a result, they are incapable of generating truly random results. Only a physical process, like flipping a coin or rolling dice, can be thought of as truly random. Computers are capable, however, of generating sequences of numbers that <em>appear</em> random using specially designed algorithms. These numbers are called <em>pseudorandom</em>.</p>
+<p><img alt="Dilbert comic" src="https://www.random.org/analysis/dilbert.jpg" /></p>
+<p>In python, both the <code class="docutils literal notranslate"><span class="pre">numpy</span></code> and <code class="docutils literal notranslate"><span class="pre">scipy</span></code> modules provide methods for generating pseudorandom numbers. In this section, we briefly review each.</p>
+<div class="section" id="using-numpy">
+<h2>Using numpy<a class="headerlink" href="#using-numpy" title="Permalink to this headline">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Initialize random number generator</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">.random</span></code> method returns a random number between zero and one.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.2722404091618418
+</pre></div>
+</div>
+</div>
+</div>
+<p>This is a random value. Every time you execute the code on your computer you will get a different value. (Unless you specify a seed, as we discuss below.) Every number is equally likely to be chosen. Since these numbers have a precision of 17 digits, there are <span class="math notranslate nohighlight">\(10^{17}\)</span> possible outcomes, so any particular number is incredibly unlikely: in fact, the probability of choosing any particular number is almost zero.</p>
+<p>The optional <code class="docutils literal notranslate"><span class="pre">size</span></code> argument controls the number of draws that are returned.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.29991523, 0.3349694 , 0.47931751, 0.92760358, 0.11955616,
+       0.32122506, 0.96370828, 0.14243041])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[0.28021173, 0.38794571, 0.12704401, 0.10107   , 0.81130356],
+       [0.01959945, 0.34606736, 0.0769582 , 0.7491976 , 0.25249427],
+       [0.95251656, 0.03844873, 0.28757088, 0.98436955, 0.30392169]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>There are several other methods provided for generating other random draws.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># draw integers from 0 to 9</span>
+<span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([3, 6, 1, 1, 6])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Choose from a list</span>
+<span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s1">&#39;Bloomington&#39;</span><span class="p">,</span> <span class="s1">&#39;West Lafayette&#39;</span><span class="p">,</span> <span class="s1">&#39;Ann Arbor&#39;</span><span class="p">,</span> <span class="s1">&#39;East Lansing&#39;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([&#39;Ann Arbor&#39;, &#39;West Lafayette&#39;], dtype=&#39;&lt;U14&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Suppose, for example, we want to simulate dealing cards from a standard deck of playing cards. We can create a deck like this…</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cards</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">+</span><span class="n">s</span>
+         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">11</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="s1">&#39;JQKA&#39;</span><span class="p">)</span>
+         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="s1">&#39;♦♣♥♠&#39;</span>
+        <span class="p">]</span>
+<span class="n">cards</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cards</span><span class="p">)</span>
+<span class="n">cards</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([&#39;2♦&#39;, &#39;2♣&#39;, &#39;2♥&#39;, &#39;2♠&#39;, &#39;3♦&#39;, &#39;3♣&#39;, &#39;3♥&#39;, &#39;3♠&#39;, &#39;4♦&#39;, &#39;4♣&#39;, &#39;4♥&#39;,
+       &#39;4♠&#39;, &#39;5♦&#39;, &#39;5♣&#39;, &#39;5♥&#39;, &#39;5♠&#39;, &#39;6♦&#39;, &#39;6♣&#39;, &#39;6♥&#39;, &#39;6♠&#39;, &#39;7♦&#39;, &#39;7♣&#39;,
+       &#39;7♥&#39;, &#39;7♠&#39;, &#39;8♦&#39;, &#39;8♣&#39;, &#39;8♥&#39;, &#39;8♠&#39;, &#39;9♦&#39;, &#39;9♣&#39;, &#39;9♥&#39;, &#39;9♠&#39;, &#39;10♦&#39;,
+       &#39;10♣&#39;, &#39;10♥&#39;, &#39;10♠&#39;, &#39;J♦&#39;, &#39;J♣&#39;, &#39;J♥&#39;, &#39;J♠&#39;, &#39;Q♦&#39;, &#39;Q♣&#39;, &#39;Q♥&#39;,
+       &#39;Q♠&#39;, &#39;K♦&#39;, &#39;K♣&#39;, &#39;K♥&#39;, &#39;K♠&#39;, &#39;A♦&#39;, &#39;A♣&#39;, &#39;A♥&#39;, &#39;A♠&#39;], dtype=&#39;&lt;U3&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<p>… and deal five cards like this:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">cards</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([&#39;A♠&#39;, &#39;6♦&#39;, &#39;10♦&#39;, &#39;J♣&#39;, &#39;8♥&#39;], dtype=&#39;&lt;U3&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<p>As we’ve seen, mathematicians have developed many <em><a class="reference external" href="https://en.wikipedia.org/wiki/List_of_probability_distributions">statistical distributions</a></em> over the last several hundred years to describe all kinds of real-world phenomena. Numpy has many such distributions <a class="reference external" href="https://numpy.org/doc/stable/reference/random/generator.html#distributions">built-in</a>.</p>
+<p>For example, we can simulate five flips of a fair coin by drawing from the Binomial distribution with parameters <span class="math notranslate nohighlight">\(n=1\)</span> and <span class="math notranslate nohighlight">\(p=0.5\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rng</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0, 1, 0, 1, 0])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Or, we can simulate the outcome of five people each flipping a coin ten times, and reporting how many times it comes up “Heads.”</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rng</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([8, 6, 2, 7, 4])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here, we draw 15 values from a standard normal distribution, <span class="math notranslate nohighlight">\(\N(0,1)\)</span>, in a <span class="math notranslate nohighlight">\(5\times 3\)</span> matrix.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 1.0074774 , -0.24043306,  0.54127701],
+       [-1.52090851,  2.06083085, -0.77401136],
+       [ 2.26833543,  0.70128983, -0.93734897],
+       [-0.5051262 , -0.58430164,  0.55165283],
+       [ 0.39643324, -0.23362117, -1.90522709]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>If we make many such draws, the average should be quite close to the true mean of the distribution (in this case, zero), while the standard deviation should be quite close to its population value as well (in this case, one). Let’s test this with 10,000 draws.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">draws</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+
+<span class="n">draws</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">draws</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.007898317668684292, 1.0042095510147375)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rng</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>To draw from a more general <span class="math notranslate nohighlight">\(\N(\mu,\sigma^2)\)</span> distribution, we use the <code class="docutils literal notranslate"><span class="pre">.normal</span></code> method. Here, we use <span class="math notranslate nohighlight">\(\mu=3\)</span> and <span class="math notranslate nohighlight">\(\sigma=2\)</span>. (Note that the function takes the argument <span class="math notranslate nohighlight">\(\sigma\)</span>, not <span class="math notranslate nohighlight">\(\sigma^2\)</span>.)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">draws2</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
+<span class="n">draws2</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">draws2</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(2.9948733251975352, 2.0256021430035487)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here is a histogram of the simulated values. Not surprisingly, it follows the typical shape of a normal distribution, although with some random noise.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">draws2</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/02b Pseudorandom number generation_33_0.png" src="_images/02b Pseudorandom number generation_33_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="specifying-a-seed">
+<h2>Specifying a seed<a class="headerlink" href="#specifying-a-seed" title="Permalink to this headline">¶</a></h2>
+<p>Algorithms to generate pseudorandom numbers use a <em>seed</em> as a starting point to generate the next number in the sequence. As each random number is generated, the <em>state</em> of the algorithm changes, allowing it to generate new random draws. We can think of the pseudorandom number generator as creating an infinite series of numbers, and by providing a seed we choose where in the series to begin.</p>
+<p>If we don’t provide a seed to the algorithm, the current time is used to generate one. However, if we want to generate a stream of <em>reproducable</em> random numbers, we can specify a seed, which will allow us to get the <em>same</em> random numbers again.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># providing a seed as an argument</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">8675309</span><span class="p">)</span>
+
+<span class="c1"># random draws</span>
+<span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[-0.03940941,  0.70927967, -0.00996881],
+       [ 0.57052593, -0.32324939,  2.16436963],
+       [ 1.62858142,  0.03537361, -0.59590844],
+       [ 1.42716144,  1.95400359,  1.69854378],
+       [ 0.11976012, -0.98484949,  0.13702581]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>If we now provide the <em>same</em> seed again, we’ll get the <em>same</em> random draws.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">8675309</span><span class="p">)</span>
+
+<span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[-0.03940941,  0.70927967, -0.00996881],
+       [ 0.57052593, -0.32324939,  2.16436963],
+       [ 1.62858142,  0.03537361, -0.59590844],
+       [ 1.42716144,  1.95400359,  1.69854378],
+       [ 0.11976012, -0.98484949,  0.13702581]])
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="using-scipy">
+<h2>Using scipy<a class="headerlink" href="#using-scipy" title="Permalink to this headline">¶</a></h2>
+<p>Many statistical functions are also available in the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/stats.html">SciPy library</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">scs</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here we use <code class="docutils literal notranslate"><span class="pre">norm</span></code> to denote the normal distribution, and call the <code class="docutils literal notranslate"><span class="pre">.rvs</span></code> method to draw random variables.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scs</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[-1.83064963,  8.06838996,  6.10302284],
+       [ 6.88877481, -4.75868285,  8.66985348],
+       [16.75196457, 10.15082607, -0.58490908],
+       [11.39957428, -8.94790264,  3.24041018],
+       [15.58851126, 24.19032862, -8.59790901]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can specify a state as follows. Even though we’re working in <code class="docutils literal notranslate"><span class="pre">scipy</span></code>, we specify the state of the random number generator within <code class="docutils literal notranslate"><span class="pre">numpy</span></code>. The two modules work very closely with each other.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="mi">8675309</span><span class="p">)</span>
+
+<span class="n">scs</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">random_state</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 0.58902366,  0.73311856, -1.1621888 ],
+       [-0.55681601, -0.77248843, -0.16822143],
+       [-0.41650391, -1.37843129,  0.74925588],
+       [ 0.17888446,  0.69401121, -1.9780535 ],
+       [-0.83381434,  0.56437344,  0.31201299]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># reset seed, verify that draws are the same</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="mi">8675309</span><span class="p">)</span>
+
+<span class="n">scs</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">random_state</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 0.58902366,  0.73311856, -1.1621888 ],
+       [-0.55681601, -0.77248843, -0.16822143],
+       [-0.41650391, -1.37843129,  0.74925588],
+       [ 0.17888446,  0.69401121, -1.9780535 ],
+       [-0.83381434,  0.56437344,  0.31201299]])
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="02a%20Probability%20theory.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Probability theory</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="02c%20Covariance.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Covariance</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By Noah Stoffman<br/>
+    
+        &copy; Copyright 2022.<br/>
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
