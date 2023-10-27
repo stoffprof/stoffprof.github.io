@@ -1,0 +1,159 @@
+<html>
+<head>
+<title>Clustering, Fixed Effects, and Fama-MacBeth in SAS</title>
+<link rel="stylesheet" type="text/css" href="mainstyle.css" />
+</head>
+
+<body style="width:800px">
+<h1>Notes on Clustering, Fixed Effects, and Fama-MacBeth regressions in SAS</h1>
+<a href="index.html">Noah Stoffman</a>, Kelley School of Business, Indiana University
+<br><font size="-1">Code updated June, 2011; Links updated August, 2016</font>
+
+<table border=0 cellpadding=10>
+	<tr>
+		<td width="70%">	
+
+		<p>This page shows how to run regressions with fixed effect or clustered standard errors, or Fama-Macbeth regressions
+in SAS. It is meant to help people who have looked at Mitch Petersen's <a href="http://www.kellogg.northwestern.edu/faculty/petersen/htm/papers/se/se_programming.htm">Programming
+Advice</a> page, but want to use SAS instead of Stata.
+
+<p>Mitch has <a href="http://www.kellogg.northwestern.edu/faculty/petersen/htm/papers/se/test_data.htm">posted results</a> using
+  a test data set that you can use to compare the output below to see how well they agree. You can generate the test data set 
+  in SAS format using <a href="gen_test_data.txt">this code</a>.
+  </td>
+<!--  <td bgcolor="#FFFF99">
+  	<b>Hot off the press!</b> Have a look at my latest research on SSRN:
+  	<br><ul><li><i><a href="http://ssrn.com/abstract=2512855" title="See the paper on SSRN" target="_new">Do Shocks to Personal Wealth Affect Risk Taking in Delegated Portfolios?</a></i> (October, 2014)</ul>
+  </td> -->
+</tr>
+</table>
+
+<hr>
+<p>SAS now reports <b>heteroscedasticity-consistent</b> standard errors and <i>t</i>-statistics with the <font face="courier new">hcc</font> option:
+  
+<p><pre>
+proc reg data=ds; 
+ model y=x / hcc;
+ run;
+quit;
+</pre>
+
+You can use the option <font face="courier new">acov</font> instead of <font face="courier new">hcc</font> if you want to see 
+the covariance matrix of the standard errors. Thanks to Guan Yang at NYU for making me aware of this. Until version 9.2, you had to 
+use ODS to capture these statistics, which always seemed silly to me. SAS finally caught up though.
+
+<hr>
+<p>A regression with <b>fixed effects</b> using the absorption technique can be done as follows. (Note that, unlike with Stata, we need to supress the intercept to avoid a dummy variable trap.)
+
+<p><pre>
+proc glm;
+ absorb identifier;
+ model depvar = indvars / solution noint; run;
+quit;
+</pre>
+
+<p>Absorption is computationally fast, but the individual fixed effects estimates will not be displayed. If you want to see the 
+  fixed effects estimates, use:
+
+<p><pre>
+proc glm;
+ class identifier;
+ model depvar = indvars identifier / solution; run;
+quit;
+</pre>
+
+<p>This will automatically generate a set of dummy variables for each level of the variable "identifier".
+
+<hr>
+<p><b>Clustered standard errors</b> may be estimated as follows:
+
+<p><pre>
+proc genmod;
+ class identifier;
+ model depvar = indvars;
+ repeated subject=identifier / type=ind; run;
+quit;
+</pre>
+
+<p>This method is quite general, and allows alternative regression specifications using different link functions.
+The online SAS documentation for the <a href="http://support.sas.com/onlinedoc/913/getDoc/en/statug.hlp/genmod_index.htm#idxgmo0001">genmod procedure</a>
+provides detail.
+
+<p>Alternatively, you may use surveyreg to do clustering:
+
+<p><pre>
+proc surveyreg data=ds;
+ cluster culster_variable;
+ model depvar = indvars; run;
+quit;
+</pre>
+Note that genmod does not report finite-sample adjusted statistics, so to make the results between these two methods consistent, you need to multiply the genmod results by (N-1)/(N-k)*M/(M-1) where N=number of observations, M=number of clusters, and k=number of regressors. More detail is provided <a href="http://www.ats.ucla.edu/stat/sas/webbooks/reg/chapter4/sasreg4.htm">here</a>.
+
+<p>Clustering in <b>two dimensions</b> can be done using the method described by Thompson (<a href="http://www.sciencedirect.com/science/article/pii/S0304405X10001923">2011</a>) and others. SAS code to do this is <a href="https://sites.utexas.edu/mcinnisj/cluster/">here</a> and <a href="http://acct.wharton.upenn.edu/~dtayl/code.htm">here</a>.
+
+<hr>
+<p>Running a <b>Fama-Macbeth</b> regression in SAS is quite easy, and doesn't require any special macros. The following code
+	will run cross-sectional regressions by year for all firms and report the means.
+	
+<p><pre>
+ods listing close;
+ods output parameterestimates=pe;
+proc reg data=dset;
+ by year;
+ model depvar = indvars; run;
+quit;
+ods listing;
+
+proc means data=pe mean std t probt;
+ var estimate; class variable;
+run;
+</pre>
+
+<p>Since the results from this approach give a time-series, it is common practice to use the <b>Newey-West</b> adjustment
+	for standard errors. Unlike Stata, this is somewhat complicated in SAS, but can be done as follows:
+	
+<p><pre>
+proc sort data=pe; by variable; run;
+
+%let lags=3;
+ods output parameterestimates=nw;
+ods listing close;
+proc model data=pe;
+ by variable;
+ instruments / intonly;
+ estimate=a;
+ fit estimate / gmm kernel=(bart,%eval(&lags+1),0) vardef=n; run;
+quit;
+ods listing;
+
+proc print data=nw; id variable;
+ var estimate--df; format estimate stderr 7.4;
+run;
+</pre>
+
+<p>Note that the lag length is set by defining a macro variable, lags. The approach here is to use GMM to regress the
+	time-series estimates on a constant, which is equivalent to taking a mean. This works because the Newey-West adjustment
+	gives the same variance as the GMM procedure. (See Cochrane's <a href="http://books.google.com/books?id=WpmtKSoM4KcC&printsec=frontcover#PPA209,M1">Asset Pricing book</a> for details.)
+
+<hr>
+<p>[<a href="./index.html">Home</a>]
+
+	<!-- Start of StatCounter Code for Default Guide -->
+	<script type="text/javascript">
+	var sc_project=446595; 
+	var sc_invisible=1; 
+	var sc_security="c452a0e7"; 
+	var scJsHost = (("https:" == document.location.protocol) ?
+	"https://secure." : "http://www.");
+	document.write("<sc"+"ript type='text/javascript' src='" +
+	scJsHost+
+	"statcounter.com/counter/counter.js'></"+"script>");
+	</script>
+	<noscript><div class="statcounter"><a title="web statistics"
+	href="http://statcounter.com/" target="_blank"><img
+	class="statcounter"
+	src="//c.statcounter.com/446595/0/c452a0e7/1/" alt="web
+	statistics"></a></div></noscript>
+	<!-- End of StatCounter Code for Default Guide -->
+</body>
+</html>

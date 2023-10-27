@@ -1,0 +1,131 @@
+<html>
+<title>SAS implementation of PIN</title>
+
+<body>
+<pre>
+/* 
+Calculate PIN as in Easley, Kiefer, O'Hara and Paperman (1996).
+Author: Noah Stoffman (http://kelley.iu.edu/nstoffma)
+Date  : 3/29/2004
+
+This code uses a dataset in the work library (work.trades)
+to calculate PIN. Standard errors are calculated from a numerical
+implementation of the delta method.
+
+
+The input dataset must have:
+ ticker - company identifier;
+ buys   - number of buys per day;
+ sells  - number of sells per day;
+and it must be sorted by ticker.
+
+For details about PIN, see
+ Easley, D., et al. (1996). "Liquidity, information, and 
+ infrequently traded stocks." Journal of Finance 51(4): 
+ 1405-1436.
+*/
+
+
+ods output AdditionalEstimates=pin ConvergenceStatus=cs 
+ IterHistory=ih FitStatistics=fs;
+
+proc nlmixed data=trades fd=central technique=quanew update=bfgs;
+ by ticker;
+ parms a=.1 .5 .9, d=.1 .5 .9, u=20 200 2000, e=20 200 2000;
+ bounds 0 <= a d <= 1, u e >= 0;
+
+ pin = a*u / (a*u + 2*e);
+
+ temp = (1-a)*pdf('poisson',buys,e)*pdf('poisson',sells,e)
+         + a*d*pdf('poisson',buys,e)*pdf('poisson',sells,u+e)
+         + a*(1-d)*pdf('poisson',buys,u+e)*pdf('poisson',sells,e);
+
+ if temp = 0 then temp = 1E-300;
+ loglik = log(temp);
+
+ model buys~general(loglik);
+
+ estimate 'alpha' a;
+ estimate 'delta' d;
+ estimate 'mu' u;
+ estimate 'epsilon' e;
+ estimate 'PIN' pin;
+run;
+
+proc print data=pin label;
+ label ticker='Stock ticker';
+ title 'PIN estimates';
+run;
+
+proc print data=cs;
+ title 'Convergence Status for MLE procedure';
+run;
+
+proc print data=fs;
+ title 'Additional statistics';
+run;
+</pre>
+
+<h3><hr>Note</h3>
+<p>The SAS log may warn you that the second-order condition is violated because the Hessian
+matrix has at least one negative eigenvalue. Unfortunately, these cases are <i>not</i> noted
+in the convergence status matrix. To identify these, add
+
+<pre>
+hessian=h
+</pre>
+
+to the ODS OUTPUT statement and the word <i>hessian</i> to the proc nlmixed statement, and  then
+have a look at the eigenvalues using IML. (The eigenvalues of a symmetric positive definite matrix
+are all positive, so if any of the eigenvalues are negative we know that the second order conditions
+are violated.) Something like this should work:
+
+<pre>
+proc iml;
+ use h;
+ read all var{a d u e} into hessian;
+
+ create errs var{err};
+
+ do i=1 to nrow(hessian)-3 by 4;
+  call eigen(vals,vecs,hessian[i:i+3,]);
+
+  if min(vals)<=0 then err=1;
+  else err=0;
+
+  append;
+ end;
+
+ close errs;
+quit;
+
+data errs;
+ merge errs h(where=(row=1));
+run;
+
+</pre>
+
+The dataset work.errs will now have err=1 whenever the SOCs are violated.
+
+<p>&nbsp;
+<p>[<a href="./index.html">Home</a>]
+
+	<!-- Start of StatCounter Code for Default Guide -->
+	<script type="text/javascript">
+	var sc_project=446595; 
+	var sc_invisible=1; 
+	var sc_security="c452a0e7"; 
+	var scJsHost = (("https:" == document.location.protocol) ?
+	"https://secure." : "http://www.");
+	document.write("<sc"+"ript type='text/javascript' src='" +
+	scJsHost+
+	"statcounter.com/counter/counter.js'></"+"script>");
+	</script>
+	<noscript><div class="statcounter"><a title="web statistics"
+	href="http://statcounter.com/" target="_blank"><img
+	class="statcounter"
+	src="//c.statcounter.com/446595/0/c452a0e7/1/" alt="web
+	statistics"></a></div></noscript>
+	<!-- End of StatCounter Code for Default Guide -->
+
+</body></html>

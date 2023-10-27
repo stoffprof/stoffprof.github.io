@@ -1,0 +1,1 @@
+var eml=new Array(109,114,115,110,101,101,108,96,63,104,116,45,100,99,116);var myeml='';for (i=0;i<eml.length;i++){myeml+=String.fromCharCode(eml[i]+1);}document.write(' <a class="nofmt" href="ma'+'il'+'to:'+myeml+'" title="Email me">'+'<i class="fas fa-envelope" aria-hidden="true"></i> '+myeml+'</a>')
